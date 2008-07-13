@@ -3,7 +3,7 @@
  
 using System;
 
-namespace FluxJpeg.Core.Decoder
+namespace FluxJpeg.Core
 {
     internal class JpegQuantizationTable
     {

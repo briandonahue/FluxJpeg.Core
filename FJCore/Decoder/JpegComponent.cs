@@ -110,7 +110,7 @@ namespace FluxJpeg.Core.Decoder
 
             DynamicMethod quantizeMethod = new DynamicMethod("Quantize",
                 null, // no return type
-                args, true); // input array
+                args); // input array
 
             ILGenerator il = quantizeMethod.GetILGenerator();
 

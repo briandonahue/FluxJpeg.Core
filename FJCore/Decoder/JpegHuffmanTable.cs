@@ -4,7 +4,7 @@
 using System;
 using System.Linq;
 
-namespace FluxJpeg.Core.Decoder
+namespace FluxJpeg.Core
 {
     /// <summary>
     ///  The JPEGHuffmanTable class represents a Huffman table read from a

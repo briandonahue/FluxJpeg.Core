@@ -2,7 +2,8 @@
 /// Under the MIT License, details: License.txt.
 
 using System;
-#if WIN
+#if SILVERLIGHT
+#else
 using System.Drawing;
 using System.Drawing.Imaging;
 #endif
@@ -115,7 +116,8 @@ namespace FluxJpeg.Core
 
         delegate void ConvertColor(byte[] colorIn, byte[] colorOut);
 
-        #if WIN
+        #if SILVERLIGHT
+        #else
         public Bitmap ToBitmap()
         {
             ConvertColor ColorConverter;

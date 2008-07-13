@@ -22,3 +22,9 @@ More information: fluxcapacity.net/open-source
 April 7, 2008:
 
 - Initial release.
+
+July 13, 2008:
+
+- Encoder is now included.
+- Silverlight project added (both FJCore and FJCoreWin share source).
+- FJExample, a Silverlight test application, is included.

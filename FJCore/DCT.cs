@@ -14,7 +14,7 @@ namespace FluxJpeg.Core
     /// <summary>
     /// Implements the Discrete Cosine Transform with dynamic CIL
     /// </summary>
-    internal partial class DCT
+    public partial class DCT
     {
         private float[] _temp = new float[64];
 
@@ -61,6 +61,7 @@ namespace FluxJpeg.Core
                     cT[j, i] = c[i, j];
             return cT;
         }
+
         public static void SetValueClipped(byte[,] arr, int i, int j, float val)
         {
             // Clip into the 0...255 range & round
@@ -127,7 +128,7 @@ namespace FluxJpeg.Core
 
 
 
-#if DYNAMIC_IDCT
+        #if DYNAMIC_IDCT
 
         /// <summary>
         /// Generates a pure-IL nonbranching stream of instructions
@@ -141,7 +142,7 @@ namespace FluxJpeg.Core
 
             DynamicMethod idctMethod = new DynamicMethod("dynamicIDCT",
                 null,        // no return type
-                args, true); // input arrays
+                args); // input arrays
 
             ILGenerator il = idctMethod.GetILGenerator();
 

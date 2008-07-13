@@ -4,7 +4,7 @@ using FluxJpeg.Core.Decoder;
 using FluxJpeg.Core;
 using FluxJpeg.Core.Filtering;
 using System.Diagnostics;
-using System.Drawing;
+using FluxJpeg.Core.Encoder;
 
 namespace FJUnit
 {
@@ -24,22 +24,30 @@ namespace FJUnit
 
         private static void BasicResize()
         {
-            Bitmap resized = Resize(input, resizeTo);
+            Image resized = Resize(input, resizeTo);
 
-            // Save to disk.  This invokes GDI+ for JPEG Encode since
-            // the encoder isn't included in FJCore yet.
-            resized.Save(output, System.Drawing.Imaging.ImageFormat.Jpeg);
+            // Save to disk.
+            File.WriteAllBytes(output, Encode(resized).ToArray());
 
             // Show results
             Process.Start(new ProcessStartInfo(output));
         }
 
-        static Bitmap Resize(string pathIn, int edge)
+        static Image Resize(string pathIn, int edge)
         {
             JpegDecoder decoder = new JpegDecoder(File.Open(pathIn, FileMode.Open));
             DecodedJpeg jpeg = decoder.Decode();
             ImageResizer resizer = new ImageResizer(jpeg.Image);
-            return resizer.Resize(edge, ResamplingFilters.NearestNeighbor).ToBitmap();
+            return resizer.Resize(edge, ResamplingFilters.NearestNeighbor);
+        }
+
+        static MemoryStream Encode(Image image)
+        {
+            MemoryStream outStream = new MemoryStream();
+            JpegEncoder encoder = new JpegEncoder(image, 90, outStream);
+            encoder.Encode();
+            outStream.Seek(0, SeekOrigin.Begin);
+            return outStream;
         }
 
         static void PrintHeader()
