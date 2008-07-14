@@ -16,7 +16,7 @@
         <Button Click="Button_Click" Grid.ColumnSpan="2" Content="Open..."/>
 
         <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Foreground="#bbbbbb" Text="Input"/>
-        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Foreground="#bbbbbb" Grid.Column="1" Text="Output"/>
+        <TextBlock x:Name="OutputText" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Foreground="#bbbbbb" Grid.Column="1" Text="Output"/>
         
         <Image HorizontalAlignment="Center"
                VerticalAlignment="Center"

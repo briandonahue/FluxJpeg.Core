@@ -23,11 +23,11 @@ namespace FluxJpeg.Core
             _input = input;
         }
 
-        public static bool ResizeNeeded(int curWidth, int curHeight, int maxEdgeLength)
+        public static bool ResizeNeeded(FluxJpeg.Core.Image image, int maxEdgeLength)
         {
-            double scale = (curWidth > curHeight) ? 
-                (double)maxEdgeLength / curWidth : 
-                (double)maxEdgeLength / curHeight;
+            double scale = (image.Width > image.Height) ? 
+                (double)maxEdgeLength / image.Width : 
+                (double)maxEdgeLength / image.Height;
 
             return scale < 1.0; // true if we must downscale
         }

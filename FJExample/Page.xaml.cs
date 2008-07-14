@@ -27,35 +27,46 @@ namespace FJExample
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "Image files (*.jpg)|*.jpg";
+            OpenFileDialog ofd = new OpenFileDialog() { Filter = "Image files (*.jpg)|*.jpg" };
+
             if (ofd.ShowDialog() != true) return;
 
-            MemoryStream outStream = new MemoryStream();
-
-            // Copy the image to a buffer to hand to Silverlight
             Stream fileStream = ofd.SelectedFile.OpenRead();
-            byte[] fileBuffer = new byte[(int)fileStream.Length];
-            fileStream.Read(fileBuffer, 0, (int)fileStream.Length);
-            fileStream.Seek(0, SeekOrigin.Begin);
-            MemoryStream inStream = new MemoryStream(fileBuffer);
 
+            // Display input image
+            Stream inStream = new MemoryStream(new BinaryReader(fileStream).ReadBytes((int)fileStream.Length));
             BitmapImage imageIn = new BitmapImage();
             imageIn.SetSource(inStream);
             InputImage.Source = imageIn;
 
+            // Rewind
+            fileStream.Seek(0, SeekOrigin.Begin);
+
             using (fileStream)
             {
-                JpegDecoder decoder = new JpegDecoder(fileStream);
-                DecodedJpeg jpeg = decoder.Decode();
-                ImageResizer resizer = new ImageResizer(jpeg.Image);
-                FluxJpeg.Core.Image small =
-                    resizer.Resize(320, ResamplingFilters.NearestNeighbor);
-                JpegEncoder encoder = new JpegEncoder(small, 90, outStream);
-                encoder.Encode();
+                // Decode
+                DecodedJpeg jpegIn = new JpegDecoder(fileStream).Decode();
 
-                BitmapImage image = new BitmapImage();
+                if (!ImageResizer.ResizeNeeded(jpegIn.Image, 320))
+                {
+                    OutputImage.Source = null;
+                    OutputText.Text = "No resize necessary.";
+                    return;
+                }
+
+                // Resize
+                DecodedJpeg jpegOut = new DecodedJpeg(
+                    new ImageResizer(jpegIn.Image)
+                        .Resize(320, ResamplingFilters.NearestNeighbor),
+                    jpegIn.MetaHeaders); // Retain EXIF details
+
+                // Encode
+                MemoryStream outStream = new MemoryStream();
+                new JpegEncoder(jpegOut, 90, outStream).Encode();
+
+                // Display 
                 outStream.Seek(0, SeekOrigin.Begin);
+                BitmapImage image = new BitmapImage();
                 image.SetSource(outStream);
                 OutputImage.Source = image;
             }
