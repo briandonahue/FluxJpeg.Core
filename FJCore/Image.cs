@@ -44,10 +44,39 @@ namespace FluxJpeg.Core
             if (_cm.colorspace == cs) return this;
 
             byte[] ycbcr = new byte[3];
+            byte[] rgb = new byte[3];
 
-            if (_cm.colorspace == ColorSpace.YCbCr && cs == ColorSpace.RGB)
+            if (_cm.colorspace == ColorSpace.RGB && cs == ColorSpace.YCbCr)
             {
-                byte[] rgb = new byte[3];
+                /*
+                 *  Y' =       + 0.299    * R'd + 0.587    * G'd + 0.114    * B'd
+                    Cb = 128   - 0.168736 * R'd - 0.331264 * G'd + 0.5      * B'd
+                    Cr = 128   + 0.5      * R'd - 0.418688 * G'd - 0.081312 * B'd
+                 * 
+                 */
+
+                for (int x = 0; x < width; x++)
+                    for (int y = 0; y < height; y++)
+                    {
+                        byte r = _raster[0][x, y], g=
+
+                        rgb[0] = (byte)_raster[0][x, y]; // 0 is LUMA
+                        rgb[1] = (byte)_raster[1][x, y]; // 1 is BLUE
+                        rgb[2] = (byte)_raster[2][x, y];
+
+                        YCbCr.fromRGB(rgb, ycbcr);
+
+                        _raster[0][x, y] = ycbcr[0];
+                        _raster[1][x, y] = ycbcr[1];
+                        _raster[2][x, y] = ycbcr[2];
+                    }
+
+                _cm.colorspace = ColorSpace.YCbCr;
+
+
+            }
+            else if (_cm.colorspace == ColorSpace.YCbCr && cs == ColorSpace.RGB)
+            {
 
                 for (int x = 0; x < width; x++)
                     for (int y = 0; y < height; y++)
@@ -56,11 +85,12 @@ namespace FluxJpeg.Core
                         ycbcr[1] = (byte)_raster[1][x, y]; // 1 is BLUE
                         ycbcr[2] = (byte)_raster[2][x, y];
 
+                        YCbCr.fromRGB(rgb, ycbcr);
                         YCbCr.toRGB(ycbcr, rgb);
 
-                        _raster[0][x, y] = rgb[0];
-                        _raster[1][x, y] = rgb[1];
-                        _raster[2][x, y] = rgb[2];
+                        _raster[0][x, y] = ycbcr[0];
+                        _raster[1][x, y] = ycbcr[1];
+                        _raster[2][x, y] = ycbcr[2];
                     }
 
                 _cm.colorspace = ColorSpace.RGB;
@@ -86,6 +116,10 @@ namespace FluxJpeg.Core
             {
                 ChangeColorSpace(ColorSpace.YCbCr);
                 ChangeColorSpace(ColorSpace.RGB);
+            }
+            else
+            {
+                throw new Exception("Colorspace conversion not supported.");
             }
 
             return this;

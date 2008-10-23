@@ -51,6 +51,16 @@ namespace FluxJpeg.Core
             return (dest);
         }
 
+
+        /* RGB to YCbCr range 0-255 */
+        public static void fromRGB(byte[] rgb, byte[] ycbcr)
+        {
+            ycbcr[0] = (byte)((0.299 * (float)rgb[0] + 0.587 * (float)rgb[1] + 0.114 * (float)rgb[2]));
+            ycbcr[1] = (byte)(128 + (byte)((-0.16874 * (float)rgb[0] - 0.33126 * (float)rgb[1] + 0.5 * (float)rgb[2])));
+            ycbcr[2] = (byte)(128 + (byte)((0.5 * (float)rgb[0] - 0.41869 * (float)rgb[1] - 0.08131 * (float)rgb[2])));
+        }
+
+
         /* RGB to YCbCr range 0-255 */
         public static float[] fromRGB(float[] data)
         {
