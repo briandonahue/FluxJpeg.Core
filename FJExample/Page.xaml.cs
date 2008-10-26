@@ -31,7 +31,7 @@ namespace FJExample
 
             if (ofd.ShowDialog() != true) return;
 
-            Stream fileStream = ofd.SelectedFile.OpenRead();
+            Stream fileStream = ofd.File.OpenRead();
 
             // Display input image
             Stream inStream = new MemoryStream(new BinaryReader(fileStream).ReadBytes((int)fileStream.Length));
