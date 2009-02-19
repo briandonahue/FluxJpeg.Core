@@ -58,17 +58,7 @@ namespace FluxJpeg.Core
                 for (int x = 0; x < width; x++)
                     for (int y = 0; y < height; y++)
                     {
-                        byte r = _raster[0][x, y], g=
-
-                        rgb[0] = (byte)_raster[0][x, y]; // 0 is LUMA
-                        rgb[1] = (byte)_raster[1][x, y]; // 1 is BLUE
-                        rgb[2] = (byte)_raster[2][x, y];
-
-                        YCbCr.fromRGB(rgb, ycbcr);
-
-                        _raster[0][x, y] = ycbcr[0];
-                        _raster[1][x, y] = ycbcr[1];
-                        _raster[2][x, y] = ycbcr[2];
+                        YCbCr.fromRGB(ref _raster[0][x, y], ref _raster[1][x, y], ref _raster[2][x, y]);
                     }
 
                 _cm.colorspace = ColorSpace.YCbCr;
@@ -81,16 +71,11 @@ namespace FluxJpeg.Core
                 for (int x = 0; x < width; x++)
                     for (int y = 0; y < height; y++)
                     {
-                        ycbcr[0] = (byte)_raster[0][x, y]; // 0 is LUMA
-                        ycbcr[1] = (byte)_raster[1][x, y]; // 1 is BLUE
-                        ycbcr[2] = (byte)_raster[2][x, y];
+                        // 0 is LUMA
+                        // 1 is BLUE
+                        // 2 is RED
 
-                        YCbCr.fromRGB(rgb, ycbcr);
-                        YCbCr.toRGB(ycbcr, rgb);
-
-                        _raster[0][x, y] = ycbcr[0];
-                        _raster[1][x, y] = ycbcr[1];
-                        _raster[2][x, y] = ycbcr[2];
+                        YCbCr.toRGB(ref _raster[0][x, y], ref _raster[1][x, y], ref _raster[2][x, y]);
                     }
 
                 _cm.colorspace = ColorSpace.RGB;
@@ -148,7 +133,7 @@ namespace FluxJpeg.Core
             return raster;
         }
 
-        delegate void ConvertColor(byte[] colorIn, byte[] colorOut);
+        delegate void ConvertColor(ref byte c1, ref byte c2, ref byte c3);
 
         #if SILVERLIGHT
         #else
@@ -187,15 +172,16 @@ namespace FluxJpeg.Core
                 {
                     for (int x = 0; x < _width; x++)
                     {
-                        inColor[0] = (byte)_raster[0][x, y];
-                        inColor[1] = (byte)_raster[1][x, y];
-                        inColor[2] = (byte)_raster[2][x, y];
+                        ptrBitmap[0] = (byte)_raster[0][x, y];
+                        ptrBitmap[1] = (byte)_raster[1][x, y];
+                        ptrBitmap[2] = (byte)_raster[2][x, y];
 
-                        ColorConverter(inColor, outColor);
+                        ColorConverter(ref ptrBitmap[0], ref ptrBitmap[1], ref ptrBitmap[2]);
 
-                        ptrBitmap[2] = outColor[0];
-                        ptrBitmap[1] = outColor[1];
-                        ptrBitmap[0] = outColor[2];
+                        // Swap RGB --> BGR
+                        byte R = ptrBitmap[0];
+                        ptrBitmap[0] = ptrBitmap[2];
+                        ptrBitmap[2] = R;
 
                         ptrBitmap[3] = 255; /* 100% opacity */
                         ptrBitmap += 4;     // advance to the next pixel

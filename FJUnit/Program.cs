@@ -26,6 +26,9 @@ namespace FJUnit
         {
             Image resized = Resize(input, resizeTo);
 
+            System.Drawing.Bitmap bmp = resized.ToBitmap();
+            bmp.Save("out.jpg");
+
             // Save to disk.
             File.WriteAllBytes(output, Encode(resized).ToArray());
 
