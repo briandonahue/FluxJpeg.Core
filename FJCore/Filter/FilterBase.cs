@@ -1,4 +1,4 @@
-/// Copyright (c) 2008 Jeffrey Powers for Fluxcapacity Open Source.
+/// Copyright (c) 2008-09 Jeffrey Powers for Occipital Open Source.
 /// Under the MIT License, details: License.txt.
 
 namespace FluxJpeg.Core.Filtering
@@ -8,6 +8,7 @@ namespace FluxJpeg.Core.Filtering
     public enum ResamplingFilters
     {
         NearestNeighbor,
+        LowpassAntiAlias
         //Bicubic
     }
 
