@@ -11,7 +11,7 @@ namespace FJUnit
     class Program
     {
         static string output = "output.jpg", input = "../../geneserath.jpg";
-        static int resizeTo = 640;
+        static int resizeTo = 500;
 
         static void Main(string[] args)
         {
@@ -38,13 +38,13 @@ namespace FJUnit
             JpegDecoder decoder = new JpegDecoder(File.Open(pathIn, FileMode.Open));
             DecodedJpeg jpeg = decoder.Decode();
             ImageResizer resizer = new ImageResizer(jpeg.Image);
-            return resizer.Resize(edge, ResamplingFilters.NearestNeighbor);
+            return resizer.Resize(edge, ResamplingFilters.LowpassAntiAlias);
         }
 
         static MemoryStream Encode(Image image)
         {
             MemoryStream outStream = new MemoryStream();
-            JpegEncoder encoder = new JpegEncoder(image, 90, outStream);
+            JpegEncoder encoder = new JpegEncoder(image, 85, outStream);
             encoder.Encode();
             outStream.Seek(0, SeekOrigin.Begin);
             return outStream;

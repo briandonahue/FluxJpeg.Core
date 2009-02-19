@@ -78,6 +78,9 @@ namespace FluxJpeg.Core
                 case ResamplingFilters.NearestNeighbor:
                     resizeFilter = new NNResize();
                     break;
+                case ResamplingFilters.LowpassAntiAlias:
+                    resizeFilter = new LowpassResize();
+                    break;
                 default:
                     throw new NotSupportedException();
             }

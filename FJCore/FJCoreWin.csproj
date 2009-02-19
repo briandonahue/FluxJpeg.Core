@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{92CBFC34-C2C8-4DA5-B1A1-0701AE69F252}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -62,8 +62,11 @@
     <Compile Include="Decoder\JpegScan.cs" />
     <Compile Include="Encoder\JpegEncoder.cs" />
     <Compile Include="FDCT.cs" />
+    <Compile Include="Filter\Convolution.cs" />
+    <Compile Include="Filter\FilterLowpassResize.cs" />
     <Compile Include="Filter\FilterNNResize.cs" />
     <Compile Include="Filter\FilterBase.cs" />
+    <Compile Include="Filter\GrayImage.cs" />
     <Compile Include="Image.cs" />
     <Compile Include="IO\BinaryReader.cs" />
     <Compile Include="IO\BinaryWriter.cs" />
