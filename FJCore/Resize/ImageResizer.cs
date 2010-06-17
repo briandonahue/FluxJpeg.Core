@@ -32,7 +32,7 @@ namespace FluxJpeg.Core
             return scale < 1.0; // true if we must downscale
         }
 
-        public Image Resize(int maxEdgeLength, ResamplingFilters technique)
+        public Image ResizeToScale(int maxEdgeLength, ResamplingFilters technique)
         {
             double scale = 0;
 
@@ -44,10 +44,10 @@ namespace FluxJpeg.Core
             if (scale >= 1.0)
                 throw new ResizeNotNeededException();
             else
-                return Resize(scale, technique);
+                return ResizeToScale(scale, technique);
         }
 
-        public Image Resize(int maxWidth, int maxHeight, ResamplingFilters technique)
+        public Image ResizeToScale(int maxWidth, int maxHeight, ResamplingFilters technique)
         {
             double wFrac = (double)maxWidth / _input.Width;
             double hFrac = (double)maxHeight / _input.Height;
@@ -63,16 +63,29 @@ namespace FluxJpeg.Core
             if (scale >= 1.0)
                 throw new ResizeNotNeededException();
             else
-                return Resize(scale, technique);
+                return ResizeToScale(scale, technique);
         }
 
-        public Image Resize(double scale, ResamplingFilters technique)
+        public Image ResizeToScale(double scale, ResamplingFilters technique)
         {
             int height = (int)(scale * _input.Height);
             int width = (int)(scale * _input.Width);
 
             Filter resizeFilter;
 
+            resizeFilter = GetResizeFilter(technique);
+
+            return PerformResize(resizeFilter, width, height);
+        }
+
+        private Image PerformResize(Filter resizeFilter, int width, int height)
+        {
+            return new Image(_input.ColorModel, resizeFilter.Apply(_input.Raster, width, height));
+        }
+
+        private Filter GetResizeFilter(ResamplingFilters technique)
+        {
+            Filter resizeFilter;
             switch (technique)
             {
                 case ResamplingFilters.NearestNeighbor:
@@ -84,8 +97,14 @@ namespace FluxJpeg.Core
                 default:
                     throw new NotSupportedException();
             }
+            resizeFilter.ProgressChanged += ResizeProgressChanged;
+            return resizeFilter;
+        }
 
-            return new Image(_input.ColorModel, resizeFilter.Apply(_input.Raster, width, height));
+        public Image Resize(int width, int height, ResamplingFilters technique)
+        {
+            var resizeFilter = GetResizeFilter(technique);
+            return PerformResize(resizeFilter, width, height);
         }
 
         void ResizeProgressChanged(object sender, Filtering.FilterProgressEventArgs e)

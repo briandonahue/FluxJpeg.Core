@@ -41,7 +41,7 @@ namespace FJUnit
             JpegDecoder decoder = new JpegDecoder(File.Open(pathIn, FileMode.Open));
             DecodedJpeg jpeg = decoder.Decode();
             ImageResizer resizer = new ImageResizer(jpeg.Image);
-            return resizer.Resize(edge, ResamplingFilters.LowpassAntiAlias);
+            return resizer.ResizeToScale(edge, ResamplingFilters.LowpassAntiAlias);
         }
 
         static MemoryStream Encode(Image image)

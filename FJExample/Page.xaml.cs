@@ -57,7 +57,7 @@ namespace FJExample
                 // Resize
                 DecodedJpeg jpegOut = new DecodedJpeg(
                     new ImageResizer(jpegIn.Image)
-                        .Resize(320, ResamplingFilters.NearestNeighbor),
+                        .ResizeToScale(320, ResamplingFilters.NearestNeighbor),
                     jpegIn.MetaHeaders); // Retain EXIF details
 
                 // Encode
