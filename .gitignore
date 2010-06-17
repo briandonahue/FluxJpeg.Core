@@ -1,0 +1,33 @@
+# Standard VS.NET and ReSharper Foo
+obj
+Obj
+bin
+Bin
+ClientBin
+*.user
+*.suo
+_ReSharper.*
+*.cache
+* Thumbs.db
+*.log
+.idea
+*.resharper
+*.ReSharper
+*.swp
+ 
+local.config.yml
+
+src/app/MLDB.Website/web.config
+src/app/Atlas.ImageService/web.config
+src/test/MLDB.Core.Test/App.config
+
+deploy/*
+build
+build/*
+dist
+dist/*
+
+
+ # Office Temp Files
+~$*
+ 
