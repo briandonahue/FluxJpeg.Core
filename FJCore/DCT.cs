@@ -6,8 +6,11 @@
 //       since there is some overhead in emitting CIL dynamically.
 
 using System;
+
+#if DYNAMIC_IDCT
 using System.Reflection.Emit;
 using System.Reflection;
+#endif
 
 namespace FluxJpeg.Core
 {

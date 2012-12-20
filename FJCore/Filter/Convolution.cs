@@ -80,6 +80,7 @@ namespace FluxJpeg.Core.Filtering
                 new GrayImage(data.Height, data.Width) :
                 new GrayImage(data.Width, data.Height);
 
+#if SILVERLIGHT || DOTNET
             int startY = 0;
 
             int destPtr = transpose ?  startY : (startY * result.Width);
@@ -113,7 +114,23 @@ namespace FluxJpeg.Core.Filtering
             del((object)job); // Run the appropriate filter in this thread, too
 
             worker.Join();
+#else
+            FilterJob job
+                = new FilterJob
+                {
+                    filter = filter,
+                    data = data,
+                    destPtr = 0,
+                    result = result,
+                    start = 0,
+                    end = data.Height
+                };
 
+            if (transpose)
+                FilterPartSymmetricT(job);
+            else
+                FilterPartSymmetric(job);
+#endif
 
             return result;
         }

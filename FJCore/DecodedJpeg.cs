@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 
 namespace FluxJpeg.Core
@@ -36,7 +37,7 @@ namespace FluxJpeg.Core
 
         private List<JpegHeader> _metaHeaders;
 
-        public IList<JpegHeader> MetaHeaders { get { return _metaHeaders.AsReadOnly(); } } 
+        public IList<JpegHeader> MetaHeaders { get { return new ReadOnlyCollection<JpegHeader>(_metaHeaders); } } 
 
         public DecodedJpeg(Image image, IEnumerable<JpegHeader> metaHeaders)
         {
