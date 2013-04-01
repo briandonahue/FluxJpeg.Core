@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FJCoreWin", "FJCore\FJCoreWin.csproj", "{92CBFC34-C2C8-4DA5-B1A1-0701AE69F252}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FJUnit", "FJUnit\FJUnit.csproj", "{1E49A668-E5B7-4BFC-9A81-5C75260EC711}"
