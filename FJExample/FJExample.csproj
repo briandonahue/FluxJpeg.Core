@@ -92,9 +92,9 @@
     <None Include="Properties\AppManifest.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\FJCore\FJCore.csproj">
-      <Project>{2A3DD201-4EB0-44BA-8A99-8D5ECD538F1F}</Project>
-      <Name>FJCore</Name>
+    <ProjectReference Include="..\FJCore\Portable.FJCore.csproj">
+      <Project>{1f303b99-2c5d-4887-8e31-0b37e5279e83}</Project>
+      <Name>Portable.FJCore</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
