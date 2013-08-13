@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FJCore", "FJCore\FJCore.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FJExample", "FJExample\FJExample.csproj", "{E243C5E2-C2C4-4DCB-9381-2BD7ECF12865}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Portable.FJCore", "FJCore\Portable.FJCore.csproj", "{1F303B99-2C5D-4887-8E31-0B37E5279E83}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,6 +42,12 @@ Global
 		{E243C5E2-C2C4-4DCB-9381-2BD7ECF12865}.Release (dMSIL)|Any CPU.Build.0 = Release|Any CPU
 		{E243C5E2-C2C4-4DCB-9381-2BD7ECF12865}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E243C5E2-C2C4-4DCB-9381-2BD7ECF12865}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F303B99-2C5D-4887-8E31-0B37E5279E83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F303B99-2C5D-4887-8E31-0B37E5279E83}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F303B99-2C5D-4887-8E31-0B37E5279E83}.Release (dMSIL)|Any CPU.ActiveCfg = Release|Any CPU
+		{1F303B99-2C5D-4887-8E31-0B37E5279E83}.Release (dMSIL)|Any CPU.Build.0 = Release|Any CPU
+		{1F303B99-2C5D-4887-8E31-0B37E5279E83}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F303B99-2C5D-4887-8E31-0B37E5279E83}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

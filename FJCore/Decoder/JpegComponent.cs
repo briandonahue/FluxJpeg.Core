@@ -5,8 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using FluxJpeg.Core.IO;
-using System.Reflection.Emit;
 using System.Diagnostics;
+
+#if DYNAMIC_IDCT
+using System.Reflection.Emit;
+#endif
 
 namespace FluxJpeg.Core.Decoder
 {
@@ -22,7 +25,9 @@ namespace FluxJpeg.Core.Decoder
             set
             {
                 quantizationTable = value;
+#if DYNAMIC_IDCT
                 _quant = EmitQuantize();
+#endif
             }
         }
         private int[] quantizationTable;
@@ -101,6 +106,7 @@ namespace FluxJpeg.Core.Decoder
             previousDC = 0;
         }
 
+#if DYNAMIC_IDCT
         private delegate void QuantizeDel(float[] arr);
         private QuantizeDel _quant = null;
 
@@ -134,6 +140,7 @@ namespace FluxJpeg.Core.Decoder
 
             return (QuantizeDel)quantizeMethod.CreateDelegate(typeof(QuantizeDel));
         }
+#endif
 
         /// <summary>
         /// Run the Quantization backward method on all of the block data.
@@ -145,12 +152,14 @@ namespace FluxJpeg.Core.Decoder
                 for(int v = 0; v < factorV; v++)
                     for (int h = 0; h < factorH; h++)
                     {
+#if DYNAMIC_IDCT
                         // Dynamic IL method
                         _quant(scanData[i][h, v]);
-
+#else
                         // Old technique
-                        //float[] toQuantize = scanData[i][h, v];
-                        //for (int j = 0; j < 64; j++) toQuantize[j] *= quantizationTable[j];
+                        float[] toQuantize = scanData[i][h, v];
+                        for (int j = 0; j < quantizationTable.Length; j++) toQuantize[j] *= quantizationTable[j];
+#endif
                     }
             }
 
