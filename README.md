@@ -2,7 +2,7 @@
 
 Copyright (c) 2008-2009 Occipital Open Source, (c) 2010-2013 Brian Donahue, (c) 2012-2013 Anders Gustafsson, Cureos AB   
 
-Licensed and distributable under the terms of the MIT license: http://www.opensource.org/licenses/mit-license.php
+Licensed and distributable under the terms of the [MIT license](http://www.opensource.org/licenses/mit-license.php).
 
 *FJCore* is an image library including a pure C# implementation of the JPEG baseline and progressive codecs. Originally the library targeted Silverlight and Windows Forms applications. This is a clone of the original library that currently seems to be stagant on [Google Code](https://code.google.com/p/fjcore).
 
