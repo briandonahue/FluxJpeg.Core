@@ -47,6 +47,12 @@
     <ErrorReport>prompt</ErrorReport>
     <DefineConstants>DYNAMIC_IDCT,WIN</DefineConstants>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>FluxJpeg.Core.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -88,6 +94,9 @@
     <Content Include="JAI.txt" />
     <Content Include="License.txt" />
     <Content Include="README.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="FluxJpeg.Core.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
