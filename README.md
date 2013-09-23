@@ -29,6 +29,9 @@ To include *FJCore* in your application, we recommend [NuGet](https://nuget.org/
 
 ##Changes
 
+###0.7.2
+* Signed assemblies with snk-key to make assemblies names strong.
+
 ###0.7.1
 * Added portable class library to solution
 
