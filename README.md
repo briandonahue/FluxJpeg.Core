@@ -4,17 +4,37 @@ Copyright (c) 2008-2009 Occipital Open Source, (c) 2010-2013 Brian Donahue, (c) 
 
 Licensed and distributable under the terms of the [MIT license](http://www.opensource.org/licenses/mit-license.php).
 
-This is a form of the [FluxJpeg.Core](https://github.com/briandonahue/FluxJpeg.Core) library
+*FJCore* is an image library including a pure C# implementation of the JPEG baseline and progressive codecs. Originally the library targeted Silverlight and Windows Forms applications. This is a clone of the original [Google Code library](https://code.google.com/p/fjcore) that currently seems to be stagant.
 
-FluxJpeg.Core is a clone of the original [Google Code library](https://code.google.com/p/fjcore) that currently seems to be stagant.
+## Design goals
 
-## Fork
+* No external dependencies (besides a C# compiler and ECMA-standard CIL runtime)
+* High performance
+* High image quality
+* Simple, intuitive usage pattern
 
-This fork was created to fix two issues with the original library
+## Portable Class Library
 
-* Density properties can be updated but are never encoded in the Jpeg encoder
-* No support for hierarchical JPEG files
+*FJCore* is now also available as a *Portable Class Library (PCL)* that targets:
 
-## Pull request
+* Windows Store/8 apps
+* Windows Phone version 7 and higher
+* Silverlight version 4 and higher
+* .NET Framework version 4 and higher
+* XBox 360
 
-These fixed have been merged into the [FluxJpeg.Core](https://github.com/briandonahue/FluxJpeg.Core) library. 
+## Downloads
+
+To include *FJCore* in your application, we recommend [NuGet](https://nuget.org/packages/Flux.Jpeg.Core/).
+
+##Changes
+
+###0.7.2
+* Signed assemblies with snk-key to make assemblies names strong.
+
+###0.7.1
+* Added portable class library to solution
+
+###0.7.0
+* **Breaking Change** Changed Resize to use specific x,y dimensions and moved old Resize to ResizeToScale
+* Also wired up the ProgressChanged event to actually fire
