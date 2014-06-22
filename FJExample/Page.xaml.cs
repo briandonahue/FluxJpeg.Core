@@ -2,6 +2,7 @@
 using FluxJpeg.Core.Decoder;
 using FluxJpeg.Core.Encoder;
 using FluxJpeg.Core.Filtering;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -81,6 +82,11 @@ namespace FJExample
             var dialog = new SaveFileDialog();
             if (dialog.ShowDialog() == true)
             {
+                // After the resize, we can now inspect the PPI values
+                var ppiX = jpegOut.Image.DensityX;
+                var ppiY = jpegOut.Image.DensityX;
+                Debug.WriteLine("DPI: {0}, {1}", ppiX, ppiY);
+
                 // Get the file
                 using (var fileStream = dialog.OpenFile())
                 {
