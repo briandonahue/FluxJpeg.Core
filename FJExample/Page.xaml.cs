@@ -87,6 +87,10 @@ namespace FJExample
                 var ppiY = jpegOut.Image.DensityX;
                 Debug.WriteLine("DPI: {0}, {1}", ppiX, ppiY);
 
+                // We can now also update the DPI
+                jpegOut.Image.DensityX = 72;
+                jpegOut.Image.DensityY = 72;
+                
                 // Get the file
                 using (var fileStream = dialog.OpenFile())
                 {
