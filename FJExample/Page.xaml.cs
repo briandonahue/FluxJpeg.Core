@@ -1,25 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+﻿using FluxJpeg.Core;
+using FluxJpeg.Core.Decoder;
+using FluxJpeg.Core.Encoder;
+using FluxJpeg.Core.Filtering;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
-using FluxJpeg.Core.Decoder;
-using FluxJpeg.Core;
-using System.IO;
-using FluxJpeg.Core.Filtering;
-using FluxJpeg.Core.Encoder;
 using System.Windows.Media.Imaging;
 
 namespace FJExample
 {
     public partial class Page : UserControl
     {
+        DecodedJpeg jpegOut;
+
         public Page()
         {
             InitializeComponent();
@@ -55,7 +48,7 @@ namespace FJExample
                 }
 
                 // Resize
-                DecodedJpeg jpegOut = new DecodedJpeg(
+                jpegOut = new DecodedJpeg(
                     new ImageResizer(jpegIn.Image)
                         .ResizeToScale(320, ResamplingFilters.NearestNeighbor),
                     jpegIn.MetaHeaders); // Retain EXIF details
@@ -71,6 +64,29 @@ namespace FJExample
                 OutputImage.Source = image;
             }
 
+        }
+
+        /// <summary>
+        /// Prompts the user to save the loaded Image locally
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnSave_Click(object sender, RoutedEventArgs e)
+        {
+            // Return if no image was loaded
+            if (jpegOut == null)
+                return;
+
+            // Create an show dialog
+            var dialog = new SaveFileDialog();
+            if (dialog.ShowDialog() == true)
+            {
+                // Get the file
+                using (var fileStream = dialog.OpenFile())
+                {
+                    new JpegEncoder(jpegOut, 100, fileStream).Encode();
+                }
+            }
         }
     }
 }
