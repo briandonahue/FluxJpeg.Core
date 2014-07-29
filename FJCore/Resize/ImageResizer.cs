@@ -80,7 +80,13 @@ namespace FluxJpeg.Core
 
         private Image PerformResize(Filter resizeFilter, int width, int height)
         {
-            return new Image(_input.ColorModel, resizeFilter.Apply(_input.Raster, width, height));
+            var result = new Image(_input.ColorModel, resizeFilter.Apply(_input.Raster, width, height));
+
+            // We need to copy the PPI values to the result Image (otherwise will always be zero)
+            result.DensityX = _input.DensityX;
+            result.DensityY = _input.DensityY;
+            
+            return result;
         }
 
         private Filter GetResizeFilter(ResamplingFilters technique)

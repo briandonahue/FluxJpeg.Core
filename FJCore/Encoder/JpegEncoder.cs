@@ -111,6 +111,11 @@ namespace FluxJpeg.Core.Encoder
 
             IO.BinaryWriter writer = new IO.BinaryWriter(_outStream);
 
+            // This flag will be used to insert an APP0 frame into the file
+            // If the APP0 frame is already present, it will modify the existing frame
+            // If the APP0 frame is not present, it will create a new frame
+            bool hasAPP0Marker = false;
+
             /* APP headers and COM headers follow the same format 
              * which has a 16-bit integer length followed by a block
              * of binary data. */
@@ -119,9 +124,52 @@ namespace FluxJpeg.Core.Encoder
                 writer.Write(JPEGMarker.XFF);
                 writer.Write(header.Marker);
 
+                // Check for the APP0 marker and OVERWRITE the DPI/PPI values
+                if (header.Marker == JPEGMarker.APP0)
+                {
+                    // Update the flag here
+                    hasAPP0Marker = true;
+
+                    // Get density from image as byte arrays
+                    var densityX = BitConverter.GetBytes((short)_input.Image.DensityX);
+                    var densityY = BitConverter.GetBytes((short)_input.Image.DensityY);
+
+                    // When writing WORD (short) to the header data, we need to MSB
+                    // This is done by the BinaryWriter for shorts but since we are
+                    // copying into a byte array we need to reverse the bytes 
+                    Array.Reverse(densityX);
+                    Array.Reverse(densityY);
+
+                    // Next we copy the data into the frame
+                    densityX.CopyTo(header.Data, 8); // Position of the PPI_X field of the APP0 header
+                    densityY.CopyTo(header.Data, 10); // Position of the PPI_Y field of the APP0 header
+                }
+
                 // Header's length
                 writer.Write((short)(header.Data.Length + 2));
                 writer.Write(header.Data);
+            }
+
+            // If the image wasn't a JFIF or didn't have an APP0 header, create it
+            if (!hasAPP0Marker)
+            {
+                hasAPP0Marker = true;
+
+                writer.Write(JPEGMarker.XFF); // JFIF header
+                writer.Write(JPEGMarker.APP0); // Marker
+                writer.Write((short)16); // Header size
+                writer.Write(JPEGMarker.JFIF_J);
+                writer.Write(JPEGMarker.JFIF_F);
+                writer.Write(JPEGMarker.JFIF_I);
+                writer.Write(JPEGMarker.JFIF_F);
+                writer.Write(JPEGMarker.X00);
+                writer.Write((byte)1); // Version hi
+                writer.Write((byte)1); // Version low
+                writer.Write((byte)1); // Density unit as DOTS_PER_INCH
+                writer.Write((short)_input.Image.DensityX); // PPI X
+                writer.Write((short)_input.Image.DensityY); // PPI Y
+                writer.Write((byte)0); // Thumbnail Width
+                writer.Write((byte)0); // Thumbnail Height
             }
 
             // The DQT header

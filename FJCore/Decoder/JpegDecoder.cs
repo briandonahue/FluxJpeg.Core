@@ -462,72 +462,70 @@ namespace FluxJpeg.Core.Decoder
                         {
                             throw new NotSupportedException("No JPEG frames could be located.");
                         }
-                        else if (jpegFrames.Count == 1)
+                        else if (jpegFrames.Count > 1) // // Multiple frames, JPEG Hierarchical Frame.
                         {
-                            // Only one frame, JPEG Non-Heirarchial Frame.
-                            byte[][,] raster = Image.CreateRaster(frame.Width, frame.Height, frame.ComponentCount); 
-                            
-                            IList<JpegComponent> components = frame.Scan.Components;
-
-                            int totalSteps = components.Count * 3; // Three steps per loop
-                            int stepsFinished = 0;
-
-                            for(int i = 0; i < components.Count; i++)
-                            {
-                                JpegComponent comp = components[i];
-
-                                comp.QuantizationTable = qTables[comp.quant_id].Table;
-
-                                // 1. Quantize
-                                comp.quantizeData();
-                                UpdateProgress(++stepsFinished, totalSteps);
-
-                                // 2. Run iDCT (expensive)
-                                comp.idctData();
-                                UpdateProgress(++stepsFinished, totalSteps);
-
-                                // 3. Scale the image and write the data to the raster.
-                                comp.writeDataScaled(raster, i, BlockUpsamplingMode);
-
-                                UpdateProgress(++stepsFinished, totalSteps);
-
-                                // Ensure garbage collection.
-                                comp = null; GC.Collect();
-                            }
-
-                            // Grayscale Color Image (1 Component).
-                            if (frame.ComponentCount == 1)
-                            {
-                                ColorModel cm = new ColorModel() { colorspace = ColorSpace.Gray, Opaque = true };
-                                image = new Image(cm, raster);
-                            }
-                            // YCbCr Color Image (3 Components).
-                            else if (frame.ComponentCount == 3)
-                            {
-                                ColorModel cm = new ColorModel() { colorspace = ColorSpace.YCbCr, Opaque = true };
-                                image = new Image(cm, raster);
-                            }
-                            // Possibly CMYK or RGBA ?
-                            else
-                            {
-                                throw new NotSupportedException("Unsupported Color Mode: 4 Component Color Mode found.");
-                            }
-
-                            // If needed, convert centimeters to inches.
-                            Func<double, double> conv = x => 
-                                Units == UnitType.Inches ? x : x / 2.54;
-
-                            image.DensityX = conv(XDensity);
-                            image.DensityY = conv(YDensity);
-
-                            height = frame.Height;
-                            width = frame.Width;
+                            var orderedFrames = jpegFrames.OrderByDescending(f => f.Width * f.Height);
+                            frame = orderedFrames.FirstOrDefault(); // Take the biggest frame and continue rasterization
                         }
+                        
+                        // Only one frame here
+                        byte[][,] raster = Image.CreateRaster(frame.Width, frame.Height, frame.ComponentCount); 
+                            
+                        IList<JpegComponent> components = frame.Scan.Components;
+
+                        int totalSteps = components.Count * 3; // Three steps per loop
+                        int stepsFinished = 0;
+
+                        for(int i = 0; i < components.Count; i++)
+                        {
+                            JpegComponent comp = components[i];
+
+                            comp.QuantizationTable = qTables[comp.quant_id].Table;
+
+                            // 1. Quantize
+                            comp.quantizeData();
+                            UpdateProgress(++stepsFinished, totalSteps);
+
+                            // 2. Run iDCT (expensive)
+                            comp.idctData();
+                            UpdateProgress(++stepsFinished, totalSteps);
+
+                            // 3. Scale the image and write the data to the raster.
+                            comp.writeDataScaled(raster, i, BlockUpsamplingMode);
+
+                            UpdateProgress(++stepsFinished, totalSteps);
+
+                            // Ensure garbage collection.
+                            comp = null; GC.Collect();
+                        }
+
+                        // Grayscale Color Image (1 Component).
+                        if (frame.ComponentCount == 1)
+                        {
+                            ColorModel cm = new ColorModel() { colorspace = ColorSpace.Gray, Opaque = true };
+                            image = new Image(cm, raster);
+                        }
+                        // YCbCr Color Image (3 Components).
+                        else if (frame.ComponentCount == 3)
+                        {
+                            ColorModel cm = new ColorModel() { colorspace = ColorSpace.YCbCr, Opaque = true };
+                            image = new Image(cm, raster);
+                        }
+                        // Possibly CMYK or RGBA ?
                         else
                         {
-                            // JPEG Heirarchial Frame
-                            throw new NotSupportedException("Unsupported Codec Type: Hierarchial JPEG");
+                            throw new NotSupportedException("Unsupported Color Mode: 4 Component Color Mode found.");
                         }
+
+                        // If needed, convert centimeters to inches.
+                        Func<double, double> conv = x => 
+                            Units == UnitType.Inches ? x : x / 2.54;
+
+                        image.DensityX = conv(XDensity);
+                        image.DensityY = conv(YDensity);
+
+                        height = frame.Height;
+                        width = frame.Width;
                         break;
  
                     // Only SOF0 (baseline) and SOF2 (progressive) are supported by FJCore
