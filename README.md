@@ -15,19 +15,27 @@ Licensed and distributable under the terms of the [MIT license](http://www.opens
 
 ## Portable Class Library
 
-*FJCore* is now also available as a *Portable Class Library (PCL)* that targets:
+*FJCore* is now also available as a *Portable Class Library (PCL)*, profile 328, that targets:
 
-* Windows Store/8 apps
-* Windows Phone version 7 and higher
-* Silverlight version 4 and higher
+* Windows 8 and higher (f.k.a. *Windows Store* or *Metro* apps)
+* Windows Phone Silverlight version 8 and higher
+* Windows Phone 8.1
+* Silverlight version 5 and higher
 * .NET Framework version 4 and higher
-* XBox 360
+* Xamarin.iOS
+* Xamarin.Android
 
 ## Downloads
 
 To include *FJCore* in your application, we recommend [NuGet](https://nuget.org/packages/Flux.Jpeg.Core/).
 
 ##Changes
+
+###0.8.0
+* Updated density properties are sufficiently saved upon file output
+* Hierarchical JPEG is now supported
+
+Thanks to @Ericvf for these improvements
 
 ###0.7.2
 * Signed assemblies with snk-key to make assemblies names strong.
