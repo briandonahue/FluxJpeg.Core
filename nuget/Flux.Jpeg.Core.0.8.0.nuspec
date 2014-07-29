@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>Flux.Jpeg.Core</id>
+        <version>0.8.0</version>
+        <title>FluxJpeg.Core, FJCore, JPG Library</title>
+        <authors>Occipital,Brian Donahue,Anders Gustafsson</authors>
+        <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
+        <projectUrl>https://github.com/briandonahue/FluxJpeg.Core</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>This is a fork with minor changes from the original FJCore library at https://code.google.com/p/fjcore
+
+That library seems to be stagnant.</description>
+        <summary>JPG Encoding/Decoding/Resizing.  Especially useful in Silverlight apps. Forked from original project: https://code.google.com/p/fjcore</summary>
+        <releaseNotes>v 0.8.0:
+
+* Updated density properties are sufficiently saved upon file output
+* Hierarchical JPEG is now supported
+
+Thanks to @Ericvf for these improvements</releaseNotes>
+        <copyright>(c) 2013-2014 Project authors</copyright>
+        <tags>jpg images imageresizing GDI graphics thumbnails</tags>
+        <dependencies />
+    </metadata>
+    <files>
+        <file src="lib\net35\_._" target="lib\net35\_._" />
+        <file src="lib\portable-net4+sl5+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\_._" target="lib\portable-net4+sl5+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\_._" />
+        <file src="lib\sl40\_._" target="lib\sl40\_._" />
+    </files>
+</package>
