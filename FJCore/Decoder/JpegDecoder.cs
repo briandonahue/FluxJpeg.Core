@@ -567,6 +567,168 @@ namespace FluxJpeg.Core.Decoder
             return result;
         }
 
+        public IList<JpegHeader> ExtractHeaders()
+        {
+            // Extracts only the header (EXIF/XMP) data from the JPEG. This 
+            // method is useful if the JPEG is to be manipulated in any 
+            // way other than resizing (such as cropping), so that the metadata
+            // can be easily re-added to the outputted JPEG. The separate call
+            // is useful as loading the entire file just to pull the headers
+            // is a very time consuming process
+
+            bool haveMarker = false;
+            bool foundJFIF = false;
+
+            var headers = new List<JpegHeader>();
+
+            // Loop through until there are no more markers to read in, at
+            // that point the headers have been fully extracted
+            while (true)
+            {
+                if (DecodeProgress.Abort) return null;
+
+                #region Switch over marker types
+                switch (marker)
+                {
+                    case JPEGMarker.APP0:
+                    // APP1 is used for EXIF data
+                    case JPEGMarker.APP1:
+                    // Seldomly, APP2 gets used for extended EXIF, too
+                    case JPEGMarker.APP2:
+                    case JPEGMarker.APP3:
+                    case JPEGMarker.APP4:
+                    case JPEGMarker.APP5:
+                    case JPEGMarker.APP6:
+                    case JPEGMarker.APP7:
+                    case JPEGMarker.APP8:
+                    case JPEGMarker.APP9:
+                    case JPEGMarker.APP10:
+                    case JPEGMarker.APP11:
+                    case JPEGMarker.APP12:
+                    case JPEGMarker.APP13:
+                    case JPEGMarker.APP14:
+                    case JPEGMarker.APP15:
+                    // COM: Comment
+                    case JPEGMarker.COM:
+
+                        // We only want to extract the headers so they can be round tripped
+                        // easily with the JPEG needs to be resized
+
+                        JpegHeader header = ExtractHeader();
+
+                        #region Check explicitly for Exif Data
+
+                        if (header.Marker == JPEGMarker.APP1 && header.Data.Length >= 6)
+                        {
+                            byte[] d = header.Data;
+
+                            if (d[0] == 'E' &&
+                                d[1] == 'x' &&
+                                d[2] == 'i' &&
+                                d[3] == 'f' &&
+                                d[4] == 0 &&
+                                d[5] == 0)
+                            {
+                                // Exif.  Do something?
+                            }
+                        }
+
+                        #endregion
+
+                        #region Check for Adobe header
+
+                        if (header.Data.Length >= 5 && header.Marker == JPEGMarker.APP14)
+                        {
+                            string asText = UTF8Encoding.UTF8.GetString(header.Data, 0, 5);
+                            if (asText == "Adobe")
+                            {
+                                // ADOBE HEADER.  Do anything?
+                            }
+                        }
+
+                        #endregion
+
+                        headers.Add(header);
+
+                        if (!foundJFIF && marker == JPEGMarker.APP0)
+                        {
+                            foundJFIF = TryParseJFIF(header.Data);
+
+                            if (foundJFIF) // Found JFIF... do JFIF extension follow?
+                            {
+                                header.IsJFIF = true;
+                                marker = jpegReader.GetNextMarker();
+
+                                // Yes, they do.
+                                if (marker == JPEGMarker.APP0)
+                                {
+                                    header = ExtractHeader();
+                                    headers.Add(header);
+                                }
+                                else // No.  Delay processing this one.
+                                    haveMarker = true;
+                            }
+                        }
+
+                        break;
+
+                    case JPEGMarker.SOF0:
+                    case JPEGMarker.SOF2:
+                        break;
+
+                    case JPEGMarker.DHT:
+                        break;
+
+                    case JPEGMarker.DQT:
+                        break;
+
+                    case JPEGMarker.SOS:
+                        break;
+
+                    case JPEGMarker.DRI:
+                        break;
+
+                    case JPEGMarker.DNL:
+                        break;
+
+                    case JPEGMarker.EOI:
+                        break;
+
+                    case JPEGMarker.SOF1:
+                    case JPEGMarker.SOF3:
+                    case JPEGMarker.SOF5:
+                    case JPEGMarker.SOF6:
+                    case JPEGMarker.SOF7:
+                    case JPEGMarker.SOF9:
+                    case JPEGMarker.SOF10:
+                    case JPEGMarker.SOF11:
+                    case JPEGMarker.SOF13:
+                    case JPEGMarker.SOF14:
+                    case JPEGMarker.SOF15:
+                        throw new NotSupportedException("Unsupported codec type.");
+
+                    default: break;  // ignore
+
+                }
+
+                #endregion switch over markers
+
+                if (haveMarker) haveMarker = false;
+                else
+                {
+                    try
+                    {
+                        marker = jpegReader.GetNextMarker();
+                    }
+                    catch (System.IO.EndOfStreamException)
+                    {
+                        break; /* done reading the file */
+                    }
+                }
+            }
+
+            return headers;
+        }
         private JpegHeader ExtractHeader()
         {
             #region Extract the header
