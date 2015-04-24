@@ -84,7 +84,7 @@ namespace FJExample
             {
                 // After the resize, we can now inspect the PPI values
                 var ppiX = jpegOut.Image.DensityX;
-                var ppiY = jpegOut.Image.DensityX;
+                var ppiY = jpegOut.Image.DensityY;
                 Debug.WriteLine("DPI: {0}, {1}", ppiX, ppiY);
 
                 // We can now also update the DPI
