@@ -31,3 +31,5 @@ dist/*
  # Office Temp Files
 ~$*
  
+/[Bb]ackup*
+/UpgradeLog.htm
